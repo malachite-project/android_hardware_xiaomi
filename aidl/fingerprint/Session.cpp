@@ -92,6 +92,8 @@ ndk::ScopedAStatus Session::authenticate(int64_t operationId,
     if (error) {
         ALOGE("authenticate failed: %d", error);
         mCb->onError(Error::UNABLE_TO_PROCESS, error);
+    } else if (mUdfpsHandler) {
+        mUdfpsHandler->onAuthenticationStarted();
     }
 
     *out = SharedRefBase::make<CancellationSignal>(this);

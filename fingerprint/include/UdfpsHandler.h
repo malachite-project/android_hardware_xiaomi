@@ -34,6 +34,8 @@ class UdfpsHandler {
     // OperationContext: true while the operation authenticates for the keyguard,
     // false for BiometricPrompt, other app requests and enrollment.
     virtual void onKeyguardOperationChanged(bool /*keyguard*/) {};
+    // An authentication has started (keyguard or app), so FOD should be armed.
+    virtual void onAuthenticationStarted() {};
 };
 
 struct UdfpsHandlerFactory {
