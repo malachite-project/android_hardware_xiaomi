@@ -61,6 +61,10 @@ ndk::ScopedAStatus Session::revokeChallenge(int64_t challenge) {
 
 ndk::ScopedAStatus Session::enroll(const HardwareAuthToken& hat,
                                    std::shared_ptr<ICancellationSignal>* out) {
+    if (mUdfpsHandler) {
+        mUdfpsHandler->onKeyguardOperationChanged(false);
+    }
+
     hw_auth_token_t authToken;
     translate(hat, authToken);
 #ifndef IMPL_V2
@@ -88,6 +92,8 @@ ndk::ScopedAStatus Session::authenticate(int64_t operationId,
     if (error) {
         ALOGE("authenticate failed: %d", error);
         mCb->onError(Error::UNABLE_TO_PROCESS, error);
+    } else if (mUdfpsHandler) {
+        mUdfpsHandler->onAuthenticationStarted();
     }
 
     *out = SharedRefBase::make<CancellationSignal>(this);
@@ -195,6 +201,8 @@ void Session::notifyOperationContext(const common::OperationContext& context) {
         mUdfpsHandler->onDisplayOffChanged(context.isAod ||
                                            context.displayState == common::DisplayState::AOD ||
                                            context.displayState == common::DisplayState::NO_UI);
+        mUdfpsHandler->onKeyguardOperationChanged(context.reason ==
+                                                  common::OperationReason::KEYGUARD);
     }
 }
 
