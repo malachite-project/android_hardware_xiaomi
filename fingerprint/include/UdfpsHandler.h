@@ -31,6 +31,11 @@ class UdfpsHandler {
     virtual void setIgnoreDisplayTouches(bool /*ignore*/) {};
     // OperationContext: true while the display shows no UI or AOD (screen off or dozing).
     virtual void onDisplayOffChanged(bool /*off*/) {};
+    // OperationContext: true while the operation authenticates for the keyguard,
+    // false for BiometricPrompt, other app requests and enrollment.
+    virtual void onKeyguardOperationChanged(bool /*keyguard*/) {};
+    // An authentication has started (keyguard or app), so FOD should be armed.
+    virtual void onAuthenticationStarted() {};
 };
 
 struct UdfpsHandlerFactory {
