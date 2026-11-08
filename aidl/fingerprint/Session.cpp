@@ -413,6 +413,9 @@ void Session::notify(const fingerprint_msg_t* msg) {
             ALOGD("onEnrollResult(fid=%d, rem=%d)", msg->data.enroll.finger.fid,
                   msg->data.enroll.samples_remaining);
 #endif
+            if (mUdfpsHandler && msg->data.enroll.samples_remaining == 0) {
+                mUdfpsHandler->onOperationFinished();
+            }
             mCb->onEnrollmentProgress(msg->data.enroll.finger.fid,
                                       msg->data.enroll.samples_remaining);
 
@@ -450,6 +453,7 @@ void Session::notify(const fingerprint_msg_t* msg) {
 
                 if (mUdfpsHandler) {
                     mUdfpsHandler->onAuthenticationSucceeded();
+                    mUdfpsHandler->onOperationFinished();
                 }
                 mCb->onAuthenticationSucceeded(msg->data.authenticated.finger.fid, authToken);
                 mLockoutTracker.reset(true);
