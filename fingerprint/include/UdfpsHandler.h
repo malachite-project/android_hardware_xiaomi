@@ -36,6 +36,10 @@ class UdfpsHandler {
     virtual void onKeyguardOperationChanged(bool /*keyguard*/) {};
     // An authentication has started (keyguard or app), so FOD should be armed.
     virtual void onAuthenticationStarted() {};
+    // An enrollment or a match has finished. The framework drops onPointerUp from here
+    // on, so no onFingerUp() follows for a finger that is still down. Called on the
+    // HAL's callback thread.
+    virtual void onOperationFinished() {};
 };
 
 struct UdfpsHandlerFactory {
