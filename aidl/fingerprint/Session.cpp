@@ -75,6 +75,8 @@ ndk::ScopedAStatus Session::enroll(const HardwareAuthToken& hat,
     if (error) {
         ALOGE("enroll failed: %d", error);
         mCb->onError(Error::UNABLE_TO_PROCESS, error);
+    } else if (mUdfpsHandler) {
+        mUdfpsHandler->onEnrollmentStarted();
     }
 
     *out = SharedRefBase::make<CancellationSignal>(this);
